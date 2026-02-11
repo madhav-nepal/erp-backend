@@ -12,11 +12,10 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Move this IMMEDIATELY after app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Temporarily allow all for testing
-    allow_credentials=True,
+    allow_origins=["*"],           # Required for sslip.io domains
+    allow_credentials=False,       # CHANGE THIS TO False (Fixes the browser block)
     allow_methods=["*"],
     allow_headers=["*"],
 )
