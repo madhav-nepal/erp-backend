@@ -1,53 +1,79 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+from pydantic import BaseModel
+import models
+import auth
+from database import engine, get_db
+
+# --- DATABASE STARTUP ---
+# Creates the tables in Postgres if they don't exist
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Allow your frontend to talk to this backend
+# --- SECURITY (CORS) ---
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, replace * with your frontend domain
+    allow_origins=[
+        "http://staging.158.69.63.190.sslip.io", 
+        "http://localhost:3000"
+    ],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# --- SCHEMAS ---
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+# --- ROUTES ---
 
 @app.get("/")
 def read_root():
     return {"status": "ERP System Online"}
 
-# This is the endpoint your Dashboard is calling!
+@app.post("/login")
+def login(request: LoginRequest, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.email == request.email).first()
+    
+    if not user or not auth.verify_password(request.password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password"
+        )
+
+    access_token = auth.create_access_token(data={
+        "sub": user.email, 
+        "tenant_id": user.tenant_id,
+        "role": user.role
+    })
+
+    return {
+        "access_token": access_token, 
+        "token_type": "bearer",
+        "user": {
+            "full_name": user.full_name,
+            "email": user.email,
+            "tenant_id": user.tenant_id
+        }
+    }
+
 @app.get("/dashboard/summary")
 def get_dashboard_summary():
-    # TODO: In the future, we will fetch this data from the PostgreSQL database.
-    # For now, we return the "Real" data structure so the Frontend works.
+    # This is the "Mock Data" that makes your frontend dashboard look pretty
     return {
         "stats": [
-            { "label": "Health & Wellness", "value": "$450", "sub": "Remaining", "icon": "favorite", "color": "bg-rose-50 text-rose-600", "border": "border-rose-100 border-l-4 border-l-rose-500" },
-            { "label": "Boots Allowance", "value": "$120", "sub": "Remaining", "icon": "snowshoeing", "color": "bg-amber-50 text-amber-600", "border": "border-amber-100 border-l-4 border-l-amber-500" },
-            { "label": "Tools Allowance", "value": "$350", "sub": "Remaining", "icon": "build", "color": "bg-blue-50 text-blue-600", "border": "border-blue-100 border-l-4 border-l-blue-500" },
-            { "label": "Safety Rewards", "value": "1,250", "sub": "Points", "icon": "emoji_events", "color": "bg-emerald-50 text-emerald-600", "border": "border-emerald-100 border-l-4 border-l-emerald-500" },
-            { "label": "CyberAware", "value": "750", "sub": "Points", "icon": "security", "color": "bg-purple-50 text-purple-600", "border": "border-purple-100 border-l-4 border-l-purple-500" },
+            {"label": "Health & Wellness", "value": "$450", "sub": "Remaining", "icon": "favorite", "color": "bg-rose-50 text-rose-600", "border": "border-rose-100 border-l-4 border-l-rose-500"},
+            {"label": "Boots Allowance", "value": "$120", "sub": "Remaining", "icon": "snowshoeing", "color": "bg-amber-50 text-amber-600", "border": "border-amber-100 border-l-4 border-amber-500"},
+            {"label": "Tools Allowance", "value": "$350", "sub": "Remaining", "icon": "handyman", "color": "bg-blue-50 text-blue-600", "border": "border-blue-100 border-l-4 border-blue-500"},
+            {"label": "Safety Rewards", "value": "1,250", "sub": "Points", "icon": "emoji_events", "color": "bg-emerald-50 text-emerald-600", "border": "border-emerald-100 border-l-4 border-emerald-500"},
+            {"label": "CyberAware", "value": "750", "sub": "Points", "icon": "security", "color": "bg-purple-50 text-purple-600", "border": "border-purple-100 border-l-4 border-purple-500"},
         ],
-        "activity": [
-            { "id": 1, "user": "Backend", "color": "bg-blue-100 text-blue-700", "text": "Connected to API", "sub": "System • Just now" },
-            { "id": 2, "user": "JD", "color": "bg-green-100 text-green-700", "text": "Closed Hazard #HAZ-042", "sub": "Wiring Issue • 4 hours ago" },
-            { "id": 3, "user": "MR", "color": "bg-orange-100 text-orange-700", "text": "Reported Near Miss", "sub": "Loading Dock • Yesterday" },
-        ],
-        "tasks": [
-            { "title": "Approve Risk Assessment", "due": "Today", "priority": "High", "color": "text-red-600 bg-red-50" },
-            { "title": "Weekly Safety Inspection", "due": "Tomorrow", "priority": "Medium", "color": "text-orange-600 bg-orange-50" },
-            { "title": "Review Incident #INC-001", "due": "Feb 12", "priority": "Low", "color": "text-blue-600 bg-blue-50" },
-        ],
-        "learning": [
-            { "title": "H&S Crash Course", "progress": 100, "status": "Completed", "date": "Jan 15" },
-            { "title": "Fire Safety Basics", "progress": 75, "status": "In Progress", "date": "Due Feb 20" },
-        ],
-        "quizzes": [
-            { "title": "WHMIS 2015 Refresher", "score": "95%", "status": "Pass", "color": "text-green-600 bg-green-50" },
-            { "title": "Ladder Safety Quiz", "score": "80%", "status": "Pass", "color": "text-green-600 bg-green-50" },
-        ],
-        "certs": [
-            { "title": "Fall Protection L2", "date": "Exp: 2026-01-15", "status": "Expired", "color": "bg-red-50 text-red-700 border-red-100", "icon": "warning" },
-            { "title": "Forklift Operator", "date": "Exp: 2027-06-20", "status": "Active", "color": "bg-green-50 text-green-700 border-green-100", "icon": "check_circle" },
+        "recent_activity": [
+            {"user": "Admin", "action": "Logged in", "target": "System", "time": "Just now", "initials": "AD", "color": "bg-blue-100 text-blue-600"},
+            {"user": "JD", "action": "Closed Hazard #HAZ-042", "target": "Wiring Issue", "time": "4 hours ago", "initials": "JD", "color": "bg-green-100 text-green-600"},
         ]
     }
