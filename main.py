@@ -12,13 +12,10 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# --- SECURITY (CORS) ---
+# Move this IMMEDIATELY after app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://staging.158.69.63.190.sslip.io", 
-        "http://localhost:3000"
-    ],
+    allow_origins=["*"], # Temporarily allow all for testing
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
