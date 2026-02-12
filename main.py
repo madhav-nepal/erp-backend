@@ -7,7 +7,6 @@ import auth
 from database import engine, get_db
 
 # --- DATABASE STARTUP ---
-# Creates the tables in Postgres if they don't exist
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -18,17 +17,14 @@ app.add_middleware(
         "http://staging.158.69.63.190.sslip.io", 
         "https://app.checkifsafe.com"
     ],
-    allow_credentials=True, # Change this back to True for the frontend to work correctly
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# --- SCHEMAS ---
 class LoginRequest(BaseModel):
     email: str
     password: str
-
-# --- ROUTES ---
 
 @app.get("/")
 def read_root():
@@ -37,28 +33,11 @@ def read_root():
 @app.post("/login")
 def login(request: LoginRequest, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == request.email).first()
-    
     if not user or not auth.verify_password(request.password, user.hashed_password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid email or password"
-        )
-
-    access_token = auth.create_access_token(data={
-        "sub": user.email, 
-        "tenant_id": user.tenant_id,
-        "role": user.role
-    })
-
-    return {
-        "access_token": access_token, 
-        "token_type": "bearer",
-        "user": {
-            "full_name": user.full_name,
-            "email": user.email,
-            "tenant_id": user.tenant_id
-        }
-    }
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
+    
+    access_token = auth.create_access_token(data={"sub": user.email, "tenant_id": user.tenant_id, "role": user.role})
+    return {"access_token": access_token, "token_type": "bearer", "user": {"full_name": user.full_name, "email": user.email, "tenant_id": user.tenant_id}}
 
 @app.get("/dashboard/summary")
 def get_dashboard_summary():
@@ -89,49 +68,28 @@ def get_dashboard_summary():
              {"title": "Ladder Safety Quiz", "score": "80%", "status": "Pass"},
              {"title": "PPE Standards Check", "score": "-", "status": "Pending"}
         ],
-        "certificates": [
+        # FIX: Reverted 'certificates' back to 'certs' to match Frontend expectations
+        "certs": [
             {"title": "Fall Protection L2", "expiry": "Exp: 2026-01-15", "status": "Expired", "status_color": "bg-red-100 text-red-700"},
             {"title": "First Aid Level C", "expiry": "Exp: 2026-03-01", "status": "Expiring Soon", "status_color": "bg-orange-100 text-orange-700"},
             {"title": "Forklift Operator", "expiry": "Active", "status": "Active", "status_color": "bg-green-100 text-green-700"}
         ]
     }
 
-# --- SIDEBAR MODULE ENDPOINTS (Prevent Staging Crashes) ---
+# --- SIDEBAR MODULE ENDPOINTS ---
 
 @app.get("/tasks")
 def get_tasks():
-    # Helper for the 'My Tasks' page
-    return [
-        {"id": 1, "title": "Approve Risk Assessment", "due": "Today", "priority": "High", "status": "Pending"},
-        {"id": 2, "title": "Weekly Safety Inspection", "due": "Tomorrow", "priority": "Medium", "status": "Open"},
-        {"id": 3, "title": "Update Certification", "due": "Feb 15", "priority": "Medium", "status": "In Progress"}
-    ]
+    return [{"id": 1, "title": "Approve Risk Assessment", "due": "Today", "priority": "High", "status": "Pending"}]
 
 @app.get("/learning")
 def get_learning():
-    # Helper for 'My Learning' & 'Training' pages
-    return {
-        "courses": [
-            {"id": 101, "title": "H&S Crash Course", "progress": 100, "status": "Completed"},
-            {"id": 102, "title": "Fire Safety Basics", "progress": 75, "status": "In Progress"}
-        ],
-        "certificates": [
-            {"id": 501, "title": "Fall Protection L2", "expiry": "2026-01-15", "status": "Expired"}
-        ]
-    }
+    return {"courses": [{"id": 101, "title": "H&S Crash Course", "progress": 100, "status": "Completed"}]}
 
 @app.get("/health-safety/incidents")
 def get_incidents():
-    # Helper for 'Health & Safety' page
-    return [
-        {"id": "INC-001", "type": "Near Miss", "location": "Warehouse B", "date": "2023-10-25", "status": "Open"},
-        {"id": "HAZ-042", "type": "Wiring Issue", "location": "Server Room", "date": "2023-10-24", "status": "Resolved"}
-    ]
+    return [{"id": "INC-001", "type": "Near Miss", "location": "Warehouse B", "status": "Open"}]
 
 @app.get("/documents")
 def get_documents():
-    # Helper for 'Document Center'
-    return [
-        {"id": 1, "name": "Employee Handbook.pdf", "category": "Policy", "date": "2023-01-01"},
-        {"id": 2, "name": "Safety Manual v2.pdf", "category": "Safety", "date": "2023-06-15"}
-    ]
+    return [{"id": 1, "name": "Employee Handbook.pdf", "category": "Policy"}]
