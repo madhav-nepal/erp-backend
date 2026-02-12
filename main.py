@@ -51,31 +51,27 @@ def get_dashboard_summary():
         ],
         "activity": [
             {
-                # --- THE SHOTGUN ITEM: ONE OF THESE WILL WORK ---
                 "user": "John Doe", 
                 "initials": "JD",
                 "color": "bg-blue-100 text-blue-600",
-                # Trying all common text keys
-                "title": "Submitted Warehouse Audit", 
-                "action": "Submitted Warehouse Audit",
-                "message": "Submitted Warehouse Audit",
-                "text": "Submitted Warehouse Audit",
-                "description": "Warehouse B",
-                "target": "Warehouse B",
-                "project": "Warehouse B",
-                # Trying all common time keys
-                "time": "2 hours ago", 
-                "date": "2 hours ago",
-                "timestamp": "2 hours ago"
+                "time": "2 hours ago",
+                # SHOTGUN ROUND 2: trying 'details', 'header', 'subject', 'name'
+                "details": "Submitted Warehouse Audit",
+                "header": "Submitted Warehouse Audit",
+                "subject": "Submitted Warehouse Audit",
+                "name": "Submitted Warehouse Audit",
+                "description": "Warehouse B"
             },
             {
-                # Keep the second one simple to compare
                 "user": "Sarah Moss", 
                 "initials": "SM", 
-                "title": "Closed Hazard #HAZ-042",
-                "description": "Wiring Issue",
-                "time": "4 hours ago", 
-                "color": "bg-green-100 text-green-600"
+                "color": "bg-green-100 text-green-600",
+                "time": "4 hours ago",
+                "details": "Closed Hazard #HAZ-042",
+                "header": "Closed Hazard #HAZ-042",
+                "subject": "Closed Hazard #HAZ-042",
+                "name": "Closed Hazard #HAZ-042",
+                "description": "Wiring Issue"
             }
         ],
         "tasks": [
@@ -94,9 +90,10 @@ def get_dashboard_summary():
              {"title": "PPE Standards Check", "score": "-", "status": "Pending"}
         ],
         "certs": [
-            {"title": "Fall Protection L2", "expiry": "Exp: 2026-01-15", "status": "Expired", "status_color": "bg-red-100 text-red-700"},
-            {"title": "First Aid Level C", "expiry": "Exp: 2026-03-01", "status": "Expiring Soon", "status_color": "bg-orange-100 text-orange-700"},
-            {"title": "Forklift Operator", "expiry": "Active", "status": "Active", "status_color": "bg-green-100 text-green-700"}
+            # FIX: Added 'icon' key to match the stats widget logic
+            {"title": "Fall Protection L2", "expiry": "Exp: 2026-01-15", "status": "Expired", "status_color": "bg-red-100 text-red-700", "icon": "warning"},
+            {"title": "First Aid Level C", "expiry": "Exp: 2026-03-01", "status": "Expiring Soon", "status_color": "bg-orange-100 text-orange-700", "icon": "priority_high"},
+            {"title": "Forklift Operator", "expiry": "Active", "status": "Active", "status_color": "bg-green-100 text-green-700", "icon": "check_circle"}
         ]
     }
 
