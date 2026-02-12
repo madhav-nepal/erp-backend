@@ -62,7 +62,6 @@ def login(request: LoginRequest, db: Session = Depends(get_db)):
 
 @app.get("/dashboard/summary")
 def get_dashboard_summary():
-    # This is the "Mock Data" that makes your frontend dashboard look pretty
     return {
         "stats": [
             {"label": "Health & Wellness", "value": "$450", "sub": "Remaining", "icon": "favorite", "color": "bg-rose-50 text-rose-600", "border": "border-rose-100 border-l-4 border-l-rose-500"},
@@ -74,10 +73,26 @@ def get_dashboard_summary():
         "activity": [
             {"user": "Admin", "action": "Logged in", "target": "System", "time": "Just now", "initials": "AD", "color": "bg-blue-100 text-blue-600"},
             {"user": "JD", "action": "Closed Hazard #HAZ-042", "target": "Wiring Issue", "time": "4 hours ago", "initials": "JD", "color": "bg-green-100 text-green-600"},
-        ],  # <--- COMMA ADDED HERE
-        "tasks": [  # <--- NOW INSIDE THE BRACKETS
+        ],
+        "tasks": [
             {"title": "Approve Risk Assessment", "due": "Today", "priority": "High", "type": "Review"},
             {"title": "Weekly Safety Inspection", "due": "Tomorrow", "priority": "Medium", "type": "Inspection"},
             {"title": "Update Certification", "due": "Feb 15", "priority": "Medium", "type": "Compliance"}
+        ],
+        # --- NEW SECTIONS ADDED BELOW TO STOP ERRORS ---
+        "learning": [
+            {"title": "H&S Crash Course", "progress": 100, "due": "Jan 15", "status": "Completed"},
+            {"title": "Fire Safety Basics", "progress": 75, "due": "Due Feb 20", "status": "In Progress"},
+            {"title": "Ergonomics 101", "progress": 0, "due": "Due Mar 01", "status": "Not Started"}
+        ],
+        "quiz": [
+             {"title": "WHMIS 2015 Refresher", "score": "95%", "status": "Pass"},
+             {"title": "Ladder Safety Quiz", "score": "80%", "status": "Pass"},
+             {"title": "PPE Standards Check", "score": "-", "status": "Pending"}
+        ],
+        "certs": [
+            {"title": "Fall Protection L2", "expiry": "Exp: 2026-01-15", "status": "Expired", "status_color": "bg-red-100 text-red-700"},
+            {"title": "First Aid Level C", "expiry": "Exp: 2026-03-01", "status": "Expiring Soon", "status_color": "bg-orange-100 text-orange-700"},
+            {"title": "Forklift Operator", "expiry": "Active", "status": "Active", "status_color": "bg-green-100 text-green-700"}
         ]
-    } # <--- FINAL CLOSING BRACE HERE
+    }
