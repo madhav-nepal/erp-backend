@@ -74,5 +74,10 @@ def get_dashboard_summary():
         "activity": [
             {"user": "Admin", "action": "Logged in", "target": "System", "time": "Just now", "initials": "AD", "color": "bg-blue-100 text-blue-600"},
             {"user": "JD", "action": "Closed Hazard #HAZ-042", "target": "Wiring Issue", "time": "4 hours ago", "initials": "JD", "color": "bg-green-100 text-green-600"},
+        ],  # <--- COMMA ADDED HERE
+        "tasks": [  # <--- NOW INSIDE THE BRACKETS
+            {"title": "Approve Risk Assessment", "due": "Today", "priority": "High", "type": "Review"},
+            {"title": "Weekly Safety Inspection", "due": "Tomorrow", "priority": "Medium", "type": "Inspection"},
+            {"title": "Update Certification", "due": "Feb 15", "priority": "Medium", "type": "Compliance"}
         ]
-    }
+    } # <--- FINAL CLOSING BRACE HERE
