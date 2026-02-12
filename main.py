@@ -14,8 +14,11 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],           # Required for sslip.io domains
-    allow_credentials=False,       # CHANGE THIS TO False (Fixes the browser block)
+    allow_origins=[
+        "http://staging.158.69.63.190.sslip.io", 
+        "https://app.checkifsafe.com"
+    ],
+    allow_credentials=True, # Change this back to True for the frontend to work correctly
     allow_methods=["*"],
     allow_headers=["*"],
 )
