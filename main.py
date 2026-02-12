@@ -50,30 +50,32 @@ def get_dashboard_summary():
             {"label": "CyberAware", "value": "750", "sub": "Points", "icon": "security", "color": "bg-purple-50 text-purple-600", "border": "border-purple-100 border-l-4 border-purple-500"},
         ],
         "activity": [
-            # UPDATED: Changed keys to 'title' and 'description' and matched Prod content
             {
+                # --- THE SHOTGUN ITEM: ONE OF THESE WILL WORK ---
                 "user": "John Doe", 
-                "initials": "JD", 
-                "title": "Submitted Warehouse Audit", # Was 'action'
-                "description": "Warehouse B",         # Was 'target'
+                "initials": "JD",
+                "color": "bg-blue-100 text-blue-600",
+                # Trying all common text keys
+                "title": "Submitted Warehouse Audit", 
+                "action": "Submitted Warehouse Audit",
+                "message": "Submitted Warehouse Audit",
+                "text": "Submitted Warehouse Audit",
+                "description": "Warehouse B",
+                "target": "Warehouse B",
+                "project": "Warehouse B",
+                # Trying all common time keys
                 "time": "2 hours ago", 
-                "color": "bg-blue-100 text-blue-600"
+                "date": "2 hours ago",
+                "timestamp": "2 hours ago"
             },
             {
+                # Keep the second one simple to compare
                 "user": "Sarah Moss", 
                 "initials": "SM", 
-                "title": "Closed Hazard #HAZ-042",    # Was 'action'
-                "description": "Wiring Issue",        # Was 'target'
+                "title": "Closed Hazard #HAZ-042",
+                "description": "Wiring Issue",
                 "time": "4 hours ago", 
                 "color": "bg-green-100 text-green-600"
-            },
-            {
-                "user": "Mike Ross",
-                "initials": "MR",
-                "title": "Reported Near Miss",
-                "description": "Loading Dock",
-                "time": "Yesterday",
-                "color": "bg-orange-100 text-orange-600"
             }
         ],
         "tasks": [
