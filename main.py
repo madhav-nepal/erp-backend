@@ -71,7 +71,7 @@ def get_dashboard_summary():
             {"label": "Safety Rewards", "value": "1,250", "sub": "Points", "icon": "emoji_events", "color": "bg-emerald-50 text-emerald-600", "border": "border-emerald-100 border-l-4 border-emerald-500"},
             {"label": "CyberAware", "value": "750", "sub": "Points", "icon": "security", "color": "bg-purple-50 text-purple-600", "border": "border-purple-100 border-l-4 border-purple-500"},
         ],
-        "recent_activity": [
+        "activity": [
             {"user": "Admin", "action": "Logged in", "target": "System", "time": "Just now", "initials": "AD", "color": "bg-blue-100 text-blue-600"},
             {"user": "JD", "action": "Closed Hazard #HAZ-042", "target": "Wiring Issue", "time": "4 hours ago", "initials": "JD", "color": "bg-green-100 text-green-600"},
         ]
