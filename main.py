@@ -79,20 +79,59 @@ def get_dashboard_summary():
             {"title": "Weekly Safety Inspection", "due": "Tomorrow", "priority": "Medium", "type": "Inspection"},
             {"title": "Update Certification", "due": "Feb 15", "priority": "Medium", "type": "Compliance"}
         ],
-        # --- NEW SECTIONS ADDED BELOW TO STOP ERRORS ---
         "learning": [
             {"title": "H&S Crash Course", "progress": 100, "due": "Jan 15", "status": "Completed"},
             {"title": "Fire Safety Basics", "progress": 75, "due": "Due Feb 20", "status": "In Progress"},
             {"title": "Ergonomics 101", "progress": 0, "due": "Due Mar 01", "status": "Not Started"}
         ],
-        "quiz": [
+        "quizzes": [
              {"title": "WHMIS 2015 Refresher", "score": "95%", "status": "Pass"},
              {"title": "Ladder Safety Quiz", "score": "80%", "status": "Pass"},
              {"title": "PPE Standards Check", "score": "-", "status": "Pending"}
         ],
-        "certs": [
+        "certificates": [
             {"title": "Fall Protection L2", "expiry": "Exp: 2026-01-15", "status": "Expired", "status_color": "bg-red-100 text-red-700"},
             {"title": "First Aid Level C", "expiry": "Exp: 2026-03-01", "status": "Expiring Soon", "status_color": "bg-orange-100 text-orange-700"},
             {"title": "Forklift Operator", "expiry": "Active", "status": "Active", "status_color": "bg-green-100 text-green-700"}
         ]
     }
+
+# --- SIDEBAR MODULE ENDPOINTS (Prevent Staging Crashes) ---
+
+@app.get("/tasks")
+def get_tasks():
+    # Helper for the 'My Tasks' page
+    return [
+        {"id": 1, "title": "Approve Risk Assessment", "due": "Today", "priority": "High", "status": "Pending"},
+        {"id": 2, "title": "Weekly Safety Inspection", "due": "Tomorrow", "priority": "Medium", "status": "Open"},
+        {"id": 3, "title": "Update Certification", "due": "Feb 15", "priority": "Medium", "status": "In Progress"}
+    ]
+
+@app.get("/learning")
+def get_learning():
+    # Helper for 'My Learning' & 'Training' pages
+    return {
+        "courses": [
+            {"id": 101, "title": "H&S Crash Course", "progress": 100, "status": "Completed"},
+            {"id": 102, "title": "Fire Safety Basics", "progress": 75, "status": "In Progress"}
+        ],
+        "certificates": [
+            {"id": 501, "title": "Fall Protection L2", "expiry": "2026-01-15", "status": "Expired"}
+        ]
+    }
+
+@app.get("/health-safety/incidents")
+def get_incidents():
+    # Helper for 'Health & Safety' page
+    return [
+        {"id": "INC-001", "type": "Near Miss", "location": "Warehouse B", "date": "2023-10-25", "status": "Open"},
+        {"id": "HAZ-042", "type": "Wiring Issue", "location": "Server Room", "date": "2023-10-24", "status": "Resolved"}
+    ]
+
+@app.get("/documents")
+def get_documents():
+    # Helper for 'Document Center'
+    return [
+        {"id": 1, "name": "Employee Handbook.pdf", "category": "Policy", "date": "2023-01-01"},
+        {"id": 2, "name": "Safety Manual v2.pdf", "category": "Safety", "date": "2023-06-15"}
+    ]
