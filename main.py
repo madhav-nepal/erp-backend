@@ -90,12 +90,31 @@ def get_dashboard_summary():
              {"title": "PPE Standards Check", "score": "-", "status": "Pending"}
         ],
         "certs": [
-            # FIX: Added 'icon' key to match the stats widget logic
-            {"title": "Fall Protection L2", "expiry": "Exp: 2026-01-15", "status": "Expired", "status_color": "bg-red-100 text-red-700", "icon": "warning"},
-            {"title": "First Aid Level C", "expiry": "Exp: 2026-03-01", "status": "Expiring Soon", "status_color": "bg-orange-100 text-orange-700", "icon": "priority_high"},
-            {"title": "Forklift Operator", "expiry": "Active", "status": "Active", "status_color": "bg-green-100 text-green-700", "icon": "check_circle"}
+            {
+                "title": "Fall Protection L2", 
+                "expiry": "Exp: 2026-01-15", 
+                "status": "Expired",
+                # FIX 1: Rename 'status_color' to 'color' to match the Stats widget
+                "color": "bg-red-100 text-red-700", 
+                "icon": "warning"
+            },
+            {
+                "title": "First Aid Level C", 
+                "expiry": "Exp: 2026-03-01", 
+                "status": "Expiring Soon",
+                # FIX 1: Rename 'status_color' to 'color'
+                "color": "bg-orange-100 text-orange-700", 
+                "icon": "priority_high"
+            },
+            {
+                "title": "Forklift Operator", 
+                "expiry": "Active", 
+                "status": "Active",
+                # FIX 1: Rename 'status_color' to 'color'
+                "color": "bg-green-100 text-green-700", 
+                "icon": "check_circle"
+            }
         ]
-    }
 
 # --- SIDEBAR MODULE ENDPOINTS ---
 
