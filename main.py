@@ -50,8 +50,31 @@ def get_dashboard_summary():
             {"label": "CyberAware", "value": "750", "sub": "Points", "icon": "security", "color": "bg-purple-50 text-purple-600", "border": "border-purple-100 border-l-4 border-purple-500"},
         ],
         "activity": [
-            {"user": "Admin", "action": "Logged in", "target": "System", "time": "Just now", "initials": "AD", "color": "bg-blue-100 text-blue-600"},
-            {"user": "JD", "action": "Closed Hazard #HAZ-042", "target": "Wiring Issue", "time": "4 hours ago", "initials": "JD", "color": "bg-green-100 text-green-600"},
+            # UPDATED: Changed keys to 'title' and 'description' and matched Prod content
+            {
+                "user": "John Doe", 
+                "initials": "JD", 
+                "title": "Submitted Warehouse Audit", # Was 'action'
+                "description": "Warehouse B",         # Was 'target'
+                "time": "2 hours ago", 
+                "color": "bg-blue-100 text-blue-600"
+            },
+            {
+                "user": "Sarah Moss", 
+                "initials": "SM", 
+                "title": "Closed Hazard #HAZ-042",    # Was 'action'
+                "description": "Wiring Issue",        # Was 'target'
+                "time": "4 hours ago", 
+                "color": "bg-green-100 text-green-600"
+            },
+            {
+                "user": "Mike Ross",
+                "initials": "MR",
+                "title": "Reported Near Miss",
+                "description": "Loading Dock",
+                "time": "Yesterday",
+                "color": "bg-orange-100 text-orange-600"
+            }
         ],
         "tasks": [
             {"title": "Approve Risk Assessment", "due": "Today", "priority": "High", "type": "Review"},
@@ -68,7 +91,6 @@ def get_dashboard_summary():
              {"title": "Ladder Safety Quiz", "score": "80%", "status": "Pass"},
              {"title": "PPE Standards Check", "score": "-", "status": "Pending"}
         ],
-        # FIX: Reverted 'certificates' back to 'certs' to match Frontend expectations
         "certs": [
             {"title": "Fall Protection L2", "expiry": "Exp: 2026-01-15", "status": "Expired", "status_color": "bg-red-100 text-red-700"},
             {"title": "First Aid Level C", "expiry": "Exp: 2026-03-01", "status": "Expiring Soon", "status_color": "bg-orange-100 text-orange-700"},
